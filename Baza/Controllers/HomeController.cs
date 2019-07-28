@@ -37,7 +37,7 @@ namespace Baza.Controllers
 
         public IActionResult Test()
         {
-            ViewData["Message"] = "hłe hłe hłe";
+            ViewData["Message"] = "hłe hłe hłe hłe";
 
             return View();
         }
