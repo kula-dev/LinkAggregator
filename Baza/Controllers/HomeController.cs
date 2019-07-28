@@ -10,6 +10,7 @@ namespace Baza.Controllers
 {
     public class HomeController : Controller
     {
+
         public IActionResult Index()
         {
             return View();
@@ -31,6 +32,13 @@ namespace Baza.Controllers
 
         public IActionResult Privacy()
         {
+            return View();
+        }
+
+        public IActionResult Test()
+        {
+            ViewData["Message"] = "hłe hłe hłe";
+
             return View();
         }
 
