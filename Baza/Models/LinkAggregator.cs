@@ -12,7 +12,7 @@ namespace Baza.Models
             : base(options)
         { }
 
-        public DbSet<Users> Blogs { get; set; }
-        public DbSet<Links> Posts { get; set; }
+        public DbSet<Users> Users { get; set; }
+        public DbSet<Links> Links { get; set; }
     }
 }

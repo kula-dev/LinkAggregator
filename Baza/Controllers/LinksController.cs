@@ -9,22 +9,23 @@ using Baza.Models;
 
 namespace Baza.Controllers
 {
-    public class UsersController : Controller
+    public class LinksController : Controller
     {
         private readonly LinkAggregator _context;
 
-        public UsersController(LinkAggregator context)
+        public LinksController(LinkAggregator context)
         {
             _context = context;
         }
 
-        // GET: Users
+        // GET: Links
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            var linkAggregator = _context.Links.Include(l => l.Users);
+            return View(await linkAggregator.ToListAsync());
         }
 
-        // GET: Users/Details/5
+        // GET: Links/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -32,39 +33,42 @@ namespace Baza.Controllers
                 return NotFound();
             }
 
-            var users = await _context.Users
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (users == null)
+            var links = await _context.Links
+                .Include(l => l.Users)
+                .FirstOrDefaultAsync(m => m.LinkId == id);
+            if (links == null)
             {
                 return NotFound();
             }
 
-            return View(users);
+            return View(links);
         }
 
-        // GET: Users/Create
+        // GET: Links/Create
         public IActionResult Create()
         {
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email");
             return View();
         }
 
-        // POST: Users/Create
+        // POST: Links/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,Email,Password,ConfirmPassword")] Users users)
+        public async Task<IActionResult> Create([Bind("LinkId,Name,Link,Date,UserId")] Links links)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(users);
+                _context.Add(links);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(users);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", links.UserId);
+            return View(links);
         }
 
-        // GET: Users/Edit/5
+        // GET: Links/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,22 +76,23 @@ namespace Baza.Controllers
                 return NotFound();
             }
 
-            var users = await _context.Users.FindAsync(id);
-            if (users == null)
+            var links = await _context.Links.FindAsync(id);
+            if (links == null)
             {
                 return NotFound();
             }
-            return View(users);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", links.UserId);
+            return View(links);
         }
 
-        // POST: Users/Edit/5
+        // POST: Links/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,Email,Password,ConfirmPassword")] Users users)
+        public async Task<IActionResult> Edit(int id, [Bind("LinkId,Name,Link,Date,UserId")] Links links)
         {
-            if (id != users.UserId)
+            if (id != links.LinkId)
             {
                 return NotFound();
             }
@@ -96,12 +101,12 @@ namespace Baza.Controllers
             {
                 try
                 {
-                    _context.Update(users);
+                    _context.Update(links);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UsersExists(users.UserId))
+                    if (!LinksExists(links.LinkId))
                     {
                         return NotFound();
                     }
@@ -112,10 +117,11 @@ namespace Baza.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(users);
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", links.UserId);
+            return View(links);
         }
 
-        // GET: Users/Delete/5
+        // GET: Links/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,70 +129,31 @@ namespace Baza.Controllers
                 return NotFound();
             }
 
-            var users = await _context.Users
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (users == null)
+            var links = await _context.Links
+                .Include(l => l.Users)
+                .FirstOrDefaultAsync(m => m.LinkId == id);
+            if (links == null)
             {
                 return NotFound();
             }
 
-            return View(users);
+            return View(links);
         }
 
-        // POST: Users/Delete/5
+        // POST: Links/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var users = await _context.Users.FindAsync(id);
-            _context.Users.Remove(users);
+            var links = await _context.Links.FindAsync(id);
+            _context.Links.Remove(links);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Register()
+        private bool LinksExists(int id)
         {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Register(Users users)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(users);
-                await _context.SaveChangesAsync();
-                ViewBag.Message = users.Email + " Dodany to agregatora!";
-                //return RedirectToAction(nameof(Index));
-            }
-            return View();
-        }
-
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(Users users)
-        {
-            var usr = _context.Users.Where(u => u.Email == users.Email && u.Password == users.Password).FirstOrDefault();
-            if (usr != null)
-            {
-                ViewData["UserID"] = usr.UserId.ToString();
-                ViewData["UserEmail"] = usr.UserId.ToString();
-                ViewData["Login"] = true;
-                //return RedirectToAction(nameof(Index));
-            }
-            else
-                ModelState.AddModelError("", "Podane hasło lub Email są nie prawidłowe");
-            return View();
-        }
-
-        private bool UsersExists(int id)
-        {
-            return _context.Users.Any(e => e.UserId == id);
+            return _context.Links.Any(e => e.LinkId == id);
         }
     }
 }
