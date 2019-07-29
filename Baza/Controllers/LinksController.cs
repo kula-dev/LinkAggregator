@@ -47,7 +47,7 @@ namespace Baza.Controllers
         // GET: Links/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email");
+            //ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email");
             return View();
         }
 

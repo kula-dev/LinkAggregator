@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Baza.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Baza.Controllers
 {
@@ -21,7 +22,9 @@ namespace Baza.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            //return View(await _context.Users.ToListAsync());
+            var linkAggregator = _context.Links.Include(l => l.Users);
+            return View(await linkAggregator.ToListAsync());
         }
 
         // GET: Users/Details/5
@@ -43,26 +46,7 @@ namespace Baza.Controllers
         }
 
         // GET: Users/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Users/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,Email,Password,ConfirmPassword")] Users users)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(users);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(users);
-        }
+        
 
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -116,33 +100,6 @@ namespace Baza.Controllers
         }
 
         // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var users = await _context.Users
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (users == null)
-            {
-                return NotFound();
-            }
-
-            return View(users);
-        }
-
-        // POST: Users/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var users = await _context.Users.FindAsync(id);
-            _context.Users.Remove(users);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
 
         public IActionResult Register()
         {
@@ -169,19 +126,45 @@ namespace Baza.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(Users users)
+        public IActionResult Login(Users users)
         {
             var usr = _context.Users.Where(u => u.Email == users.Email && u.Password == users.Password).FirstOrDefault();
             if (usr != null)
             {
-                ViewData["UserID"] = usr.UserId.ToString();
+                HttpContext.Session.SetString("UserID", usr.UserId.ToString());
+                HttpContext.Session.SetString("UserEmail", usr.Email.ToString());
+                HttpContext.Session.SetInt32("Login", 1);
+                TempData["UserID"] = usr.UserId.ToString();
                 ViewData["UserEmail"] = usr.UserId.ToString();
                 ViewData["Login"] = true;
-                //return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
             else
                 ModelState.AddModelError("", "Podane hasło lub Email są nie prawidłowe");
             return View();
+        }
+
+        public IActionResult Panel()
+        {
+            //ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email");
+            return View();
+        }
+
+        // POST: Links/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Panel([Bind("LinkId,Name,Link,Date,UserId")] Links links)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(links);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", links.UserId);
+            return View(links);
         }
 
         private bool UsersExists(int id)

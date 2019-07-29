@@ -1,47 +1,56 @@
-﻿@model IEnumerable<Baza.Models.Users>
+﻿@using Microsoft.AspNetCore.Http;
+
+@model IEnumerable<Baza.Models.Links>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Panel użytkownika";
 }
 
-<h2>Index</h2>
+<h2>Panel użytkownika @Context.Session.GetString("UserID")</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-controller="Links" asp-action="Create">Dodaj nowy link</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Password)
+                @Html.DisplayNameFor(model => model.Link)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ConfirmPassword)
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ConfirmPassword)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Link)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Users.Email)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.LinkId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.LinkId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.LinkId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

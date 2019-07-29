@@ -39,6 +39,9 @@ namespace Baza
             var connection = @"Server=(localdb)\mssqllocaldb;Database=Baza;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<LinkAggregator>
                 (options => options.UseSqlServer(connection));
+
+            services.AddSession(s => s.IdleTimeout = TimeSpan.FromMinutes(30));
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +60,7 @@ namespace Baza
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {
