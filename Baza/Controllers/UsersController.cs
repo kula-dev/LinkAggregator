@@ -144,6 +144,14 @@ namespace Baza.Controllers
             return View();
         }
 
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Remove("Login");
+            HttpContext.Session.Remove("UserID");
+            HttpContext.Session.Remove("UserEmail");
+            return RedirectToAction(nameof(Index));
+        }
+
         public IActionResult Panel()
         {
             //ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email");
