@@ -6,7 +6,7 @@
     ViewData["Title"] = "Panel użytkownika";
 }
 
-<h2>Panel użytkownika @Context.Session.GetString("UserID")</h2>
+<h2>Panel użytkownika @Context.Session.GetString("UserEmail")</h2>
 
 <p>
     <a asp-controller="Links" asp-action="Create">Dodaj nowy link</a>

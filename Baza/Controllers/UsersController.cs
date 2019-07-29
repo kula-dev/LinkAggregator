@@ -131,7 +131,7 @@ namespace Baza.Controllers
             var usr = _context.Users.Where(u => u.Email == users.Email && u.Password == users.Password).FirstOrDefault();
             if (usr != null)
             {
-                HttpContext.Session.SetString("UserID", usr.UserId.ToString());
+                HttpContext.Session.SetInt32("UserID", usr.UserId);
                 HttpContext.Session.SetString("UserEmail", usr.Email.ToString());
                 HttpContext.Session.SetInt32("Login", 1);
                 TempData["UserID"] = usr.UserId.ToString();

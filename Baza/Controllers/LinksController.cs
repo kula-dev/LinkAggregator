@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Baza.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Baza.Controllers
 {
@@ -60,6 +61,8 @@ namespace Baza.Controllers
         {
             if (ModelState.IsValid)
             {
+                links.Date = DateTime.Now;
+                links.UserId = (int)HttpContext.Session.GetInt32("UserID");
                 _context.Add(links);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
