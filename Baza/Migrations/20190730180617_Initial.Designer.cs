@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Baza.Migrations
 {
     [DbContext(typeof(LinkAggregator))]
-    [Migration("20190730173234_Initial")]
+    [Migration("20190730180617_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,9 +48,11 @@ namespace Baza.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<string>("Link");
+                    b.Property<string>("Link")
+                        .IsRequired();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<int>("UserId");
 

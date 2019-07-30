@@ -4,6 +4,7 @@
 
 @{
     ViewData["Title"] = "Panel użytkownika";
+    var a = 1;
 }
 
 <h2>Panel użytkownika @Context.Session.GetString("UserEmail")</h2>
@@ -11,46 +12,27 @@
 <p>
     <a asp-controller="Links" asp-action="Create">Dodaj nowy link</a>
 </p>
+
 <table class="table">
-    <thead>
+    @foreach (var item in Model.Where(u => u.Users.UserId == @Context.Session.GetInt32("UserID")))
+    {
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Link)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Users)
-            </th>
-            <th></th>
+            <td rowspan="2" class="col-md-2">
+                @a
+                <form asp-controller="Example" asp-action="Save" asp-route-id="@Html.ValueFor(modelItem => item.LinkId)">
+                    <button type="submit">Like</button>
+                </form>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+                <a href="#collapseExample"> @Html.DisplayFor(modelItem => item.Link) </a>
+            </td>
         </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Link)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Users.Email)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.LinkId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.LinkId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.LinkId">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+        </tr>
+        a++;
+    }
 </table>

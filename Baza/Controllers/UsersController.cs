@@ -172,7 +172,7 @@ namespace Baza.Controllers
                     TempData["UserID"] = usr.UserId.ToString();
                     ViewData["UserEmail"] = usr.UserId.ToString();
                     ViewData["Login"] = true;
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Index", "Home", new { area = "" });
                 }
                 else
                     ModelState.AddModelError("", "Podane hasło lub Email są nie prawidłowe");

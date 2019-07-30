@@ -13,12 +13,16 @@ namespace Baza.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int LinkId { get; set; }
 
+        [Required(ErrorMessage = "Należy podać nazwe")]
         public string Name { get; set; }
 
+        [Required(ErrorMessage = "Należy podać jakiś link")]
         [Url(ErrorMessage = "Proszę podać prawidłowy link")]
         public string Link { get; set; }
 
         public DateTime Date { get; set; }
+
+        //public int TotalLikes { get; set; }
 
         [ForeignKey("Users")]
         public int UserId { get; set; }

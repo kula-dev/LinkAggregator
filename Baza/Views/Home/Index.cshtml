@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Home Page";
     var a = 1;
+    int count = 0;
 }
 
 <h2>Index</h2>
@@ -10,10 +11,13 @@
 <table class="table">
     @foreach (var item in Model)
     {
+        
         <tr>
-            <td rowspan="2" class="col-md-1">
+            <td rowspan="2" class="col-md-2">
                 @a
-                <input id="Button1" type="button" value="button" />
+                <form asp-controller="Likes" asp-action="Like" asp-route-id="@Html.ValueFor(modelItem => item.LinkId)">
+                    <button type="submit">Like</button>
+                </form>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -22,7 +26,11 @@
         </tr>
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Date.Date)
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                
+                @*@Html.DisplayFor(modelItem => item.Likes.Where(l => l.LinkID == item.LinkId))*@
             </td>
         </tr>
         a++;

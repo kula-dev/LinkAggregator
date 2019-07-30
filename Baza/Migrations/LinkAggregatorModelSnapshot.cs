@@ -46,9 +46,11 @@ namespace Baza.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<string>("Link");
+                    b.Property<string>("Link")
+                        .IsRequired();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<int>("UserId");
 

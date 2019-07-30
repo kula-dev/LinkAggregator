@@ -28,8 +28,8 @@ namespace Baza.Migrations
                 {
                     LinkId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Link = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
+                    Link = table.Column<string>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     UserId = table.Column<int>(nullable: false)
                 },
