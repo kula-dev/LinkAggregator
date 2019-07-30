@@ -5,15 +5,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Baza.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Baza.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly LinkAggregator _context;
 
-        public IActionResult Index()
+        public HomeController(LinkAggregator context)
         {
-            return View();
+            _context = context;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var linkAggregator = _context.Links.Include(l => l.Users);
+            return View(await linkAggregator.ToListAsync());
         }
 
         public IActionResult About()
@@ -35,11 +43,11 @@ namespace Baza.Controllers
             return View();
         }
 
-        public IActionResult Test()
+        public async Task<IActionResult> View22()
         {
             ViewData["Message"] = "hłe hłe hłe hłe";
-
-            return View();
+            var linkAggregator = _context.Links.Include(l => l.Users);
+            return View(await linkAggregator.ToListAsync());
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

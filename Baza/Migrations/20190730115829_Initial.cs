@@ -15,8 +15,7 @@ namespace Baza.Migrations
                     UserId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Email = table.Column<string>(nullable: false),
-                    Password = table.Column<string>(nullable: false),
-                    ConfirmPassword = table.Column<string>(nullable: true)
+                    Password = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,6 +44,35 @@ namespace Baza.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Likes",
+                columns: table => new
+                {
+                    UserID = table.Column<int>(nullable: false),
+                    LinkID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Likes", x => x.UserID);
+                    table.ForeignKey(
+                        name: "FK_Likes_Links_LinkID",
+                        column: x => x.LinkID,
+                        principalTable: "Links",
+                        principalColumn: "LinkId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Likes_Users_UserID",
+                        column: x => x.UserID,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Likes_LinkID",
+                table: "Likes",
+                column: "LinkID");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Links_UserId",
                 table: "Links",
@@ -53,6 +81,9 @@ namespace Baza.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Likes");
+
             migrationBuilder.DropTable(
                 name: "Links");
 

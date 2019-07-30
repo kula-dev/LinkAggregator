@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Baza.Migrations
 {
     [DbContext(typeof(LinkAggregator))]
-    [Migration("20190729141010_Initial")]
+    [Migration("20190730115829_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,19 @@ namespace Baza.Migrations
                 .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Baza.Models.Likes", b =>
+                {
+                    b.Property<int>("UserID");
+
+                    b.Property<int>("LinkID");
+
+                    b.HasKey("UserID");
+
+                    b.HasIndex("LinkID");
+
+                    b.ToTable("Likes");
+                });
 
             modelBuilder.Entity("Baza.Models.Links", b =>
                 {
@@ -48,8 +61,6 @@ namespace Baza.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ConfirmPassword");
-
                     b.Property<string>("Email")
                         .IsRequired();
 
@@ -59,6 +70,19 @@ namespace Baza.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Baza.Models.Likes", b =>
+                {
+                    b.HasOne("Baza.Models.Links", "Links")
+                        .WithMany("Likes")
+                        .HasForeignKey("LinkID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Baza.Models.Users", "Users")
+                        .WithMany("Likes")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Baza.Models.Links", b =>

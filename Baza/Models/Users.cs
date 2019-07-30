@@ -21,10 +21,13 @@ namespace Baza.Models
         [DataType("Password")]
         public string Password { get; set; }
 
+        [NotMapped]
         [DataType("Password")]
         [Compare("Password", ErrorMessage = "Hasła nie są takie same!")]
         public string ConfirmPassword { get; set; }
 
-        public ICollection<Links> Links { get; set; }
+        public virtual ICollection<Links> Links { get; set; }
+
+        public virtual ICollection<Likes> Likes { get; set; }
     }
 }

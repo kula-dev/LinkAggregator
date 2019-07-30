@@ -7,24 +7,20 @@ using System.Threading.Tasks;
 
 namespace Baza.Models
 {
-    public class Links
+    public class Likes
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int LinkId { get; set; }
-
-        public string Name { get; set; }
-
-        public string Link { get; set; }
-
-        [DataType(DataType.Date)]
-        public DateTime Date { get; set; }
+        public int LikeId { get; set; }
 
         [ForeignKey("Users")]
-        public int UserId { get; set; }
+        public int UserID { get; set; }
+
+        [ForeignKey("Links")]
+        public int LinkID { get; set; }
+
+        public virtual Links Links { get; set; }
 
         public virtual Users Users { get; set; }
-
-        public virtual ICollection<Likes> Likes { get; set; }
     }
 }
