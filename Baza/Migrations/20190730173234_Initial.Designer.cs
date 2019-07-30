@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Baza.Migrations
 {
     [DbContext(typeof(LinkAggregator))]
-    [Migration("20190730115829_Initial")]
+    [Migration("20190730173234_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,13 +23,19 @@ namespace Baza.Migrations
 
             modelBuilder.Entity("Baza.Models.Likes", b =>
                 {
-                    b.Property<int>("UserID");
+                    b.Property<int>("LikeId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("LinkID");
 
-                    b.HasKey("UserID");
+                    b.Property<int>("UserID");
+
+                    b.HasKey("LikeId");
 
                     b.HasIndex("LinkID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Likes");
                 });
@@ -68,6 +74,9 @@ namespace Baza.Migrations
                         .IsRequired();
 
                     b.HasKey("UserId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

@@ -15,6 +15,7 @@ namespace Baza.Models
 
         [Required(ErrorMessage = "Należy podać adres Email!")]
         [EmailAddress(ErrorMessage = "Nie prawidłowy adres Email!")]
+        
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Hasło jest wymagane!")]

@@ -13,6 +13,13 @@ namespace Baza.Models
             : base(options)
         { }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Users>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+        }
+
         public DbSet<Users> Users { get; set; }
         public DbSet<Links> Links { get; set; }
         public DbSet<Baza.Models.Likes> Likes { get; set; }

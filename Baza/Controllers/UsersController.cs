@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Baza.Models;
 using Microsoft.AspNetCore.Http;
+using System.Data.SqlClient;
 
 namespace Baza.Controllers
 {
@@ -22,9 +23,13 @@ namespace Baza.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            //return View(await _context.Users.ToListAsync());
-            var linkAggregator = _context.Links.Include(l => l.Users);
-            return View(await linkAggregator.ToListAsync());
+            if (HttpContext.Session.GetInt32("Login") != 1)
+                return RedirectToAction(nameof(Login));
+            else
+            {
+                var linkAggregator = _context.Links.Include(l => l.Users);
+                return View(await linkAggregator.ToListAsync());
+            }
         }
 
         // GET: Users/Details/5
@@ -103,45 +108,78 @@ namespace Baza.Controllers
 
         public IActionResult Register()
         {
-            return View();
+            if (HttpContext.Session.GetInt32("Login") != 1)
+                return View();
+            else
+                return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         public async Task<IActionResult> Register(Users users)
         {
-            if (ModelState.IsValid)
+            if (HttpContext.Session.GetInt32("Login") != 1)
             {
-                _context.Add(users);
-                await _context.SaveChangesAsync();
-                ViewBag.Message = users.Email + " Dodany to agregatora!";
-                //return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(users);
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        var sqlException = ex.InnerException as System.Data.SqlClient.SqlException;
+
+                        if (sqlException.Number == 2601 || sqlException.Number == 2627)
+                        {
+                            ViewBag.Message = "Już istnieje taki użytkownik!";
+                            return View();
+                        }
+                        else
+                        {
+                            ViewBag.Message = "Bład podczas dodawania do bazy!";
+                            return View();
+                        }
+                    }
+                    ViewBag.Message = users.Email + " Dodany to agregatora!";
+                }
+                return View();
             }
-            return View();
+            else
+                return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Login()
         {
-            return View();
+            if (HttpContext.Session.GetInt32("Login") != 1)
+                return View();
+            else
+                return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Login(Users users)
         {
-            var usr = _context.Users.Where(u => u.Email == users.Email && u.Password == users.Password).FirstOrDefault();
-            if (usr != null)
+            if (HttpContext.Session.GetInt32("Login") != 1)
             {
-                HttpContext.Session.SetInt32("UserID", usr.UserId);
-                HttpContext.Session.SetString("UserEmail", usr.Email.ToString());
-                HttpContext.Session.SetInt32("Login", 1);
-                TempData["UserID"] = usr.UserId.ToString();
-                ViewData["UserEmail"] = usr.UserId.ToString();
-                ViewData["Login"] = true;
-                return RedirectToAction(nameof(Index));
+                var usr = _context.Users.Where(u => u.Email == users.Email && u.Password == users.Password).FirstOrDefault();
+                if (usr != null)
+                {
+                    HttpContext.Session.SetInt32("UserID", usr.UserId);
+                    HttpContext.Session.SetString("UserEmail", usr.Email.ToString());
+                    HttpContext.Session.SetInt32("Login", 1);
+                    TempData["UserID"] = usr.UserId.ToString();
+                    ViewData["UserEmail"] = usr.UserId.ToString();
+                    ViewData["Login"] = true;
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                    ModelState.AddModelError("", "Podane hasło lub Email są nie prawidłowe");
+                return View();
             }
             else
-                ModelState.AddModelError("", "Podane hasło lub Email są nie prawidłowe");
-            return View();
+                return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Logout()
@@ -149,30 +187,7 @@ namespace Baza.Controllers
             HttpContext.Session.Remove("Login");
             HttpContext.Session.Remove("UserID");
             HttpContext.Session.Remove("UserEmail");
-            return RedirectToAction(nameof(Index));
-        }
-
-        public IActionResult Panel()
-        {
-            //ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email");
-            return View();
-        }
-
-        // POST: Links/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Panel([Bind("LinkId,Name,Link,Date,UserId")] Links links)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(links);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", links.UserId);
-            return View(links);
+            return RedirectToAction("Index", "Home", new { area = "" });
         }
 
         private bool UsersExists(int id)

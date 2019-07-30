@@ -21,13 +21,19 @@ namespace Baza.Migrations
 
             modelBuilder.Entity("Baza.Models.Likes", b =>
                 {
-                    b.Property<int>("UserID");
+                    b.Property<int>("LikeId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("LinkID");
 
-                    b.HasKey("UserID");
+                    b.Property<int>("UserID");
+
+                    b.HasKey("LikeId");
 
                     b.HasIndex("LinkID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Likes");
                 });
@@ -66,6 +72,9 @@ namespace Baza.Migrations
                         .IsRequired();
 
                     b.HasKey("UserId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

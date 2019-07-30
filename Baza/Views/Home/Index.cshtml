@@ -2,54 +2,76 @@
 
 @{
     ViewData["Title"] = "Home Page";
+    var a = 1;
 }
 
 <h2>Index</h2>
 
 <table class="table">
-    <thead>
+    @foreach (var item in Model)
+    {
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Link)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Users)
-            </th>
-            <th></th>
+            <td rowspan="2" class="col-md-1">
+                @a
+                <input id="Button1" type="button" value="button" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+                <a href="#collapseExample"> @Html.DisplayFor(modelItem => item.Link) </a>
+            </td>
         </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Link)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Users.Email)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.LinkId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.LinkId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.LinkId">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-
-
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date.Date)
+            </td>
+        </tr>
+        a++;
+    }
 </table>
+
+    @*<table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Link)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Users)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Link)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Users.Email)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.LinkId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.LinkId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.LinkId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@
+
 
 

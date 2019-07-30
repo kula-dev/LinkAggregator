@@ -48,12 +48,14 @@ namespace Baza.Migrations
                 name: "Likes",
                 columns: table => new
                 {
+                    LikeId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserID = table.Column<int>(nullable: false),
                     LinkID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Likes", x => x.UserID);
+                    table.PrimaryKey("PK_Likes", x => x.LikeId);
                     table.ForeignKey(
                         name: "FK_Likes_Links_LinkID",
                         column: x => x.LinkID,
@@ -74,9 +76,20 @@ namespace Baza.Migrations
                 column: "LinkID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Likes_UserID",
+                table: "Likes",
+                column: "UserID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Links_UserId",
                 table: "Links",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

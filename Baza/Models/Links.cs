@@ -15,9 +15,9 @@ namespace Baza.Models
 
         public string Name { get; set; }
 
+        [Url(ErrorMessage = "Proszę podać prawidłowy link")]
         public string Link { get; set; }
 
-        [DataType(DataType.Date)]
         public DateTime Date { get; set; }
 
         [ForeignKey("Users")]
