@@ -11,6 +11,10 @@
 
 <h2>Index</h2>
 
+<nav>
+    @await this.Component.InvokeAsync("Pager", new { pagingList = this.Model })
+</nav>
+
 <table class="table table">
     @foreach (var item in Model)
     {
@@ -29,8 +33,8 @@
                     }
                     else
                     {
-                        <form asp-controller="Likes" asp-action="Like" asp-route-id="@Html.ValueFor(modelItem => item.LinkId)" onsubmit="theButton.disabled = true; return true;">
-                            <button type="submit">Like</button>
+                        <form asp-controller="Likes" asp-action="Like" asp-route-id="@Html.ValueFor(modelItem => item.LinkId)" onsubmit="this.disabled = true; return true;" data-ajax="true" onclick="this.disabled = true">
+                            <button type="submit" onclick="this.disabled = true">Like</button>
                         </form>
                     }
                 }
@@ -51,49 +55,18 @@
     }
 </table>
 
-@*<table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Link)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Date)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Users)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Link)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Date)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Users.Email)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.LinkId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.LinkId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.LinkId">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>*@
+<nav>
+    @await this.Component.InvokeAsync("Pager", new { pagingList = this.Model })
+</nav>
 
+<nav>
+    <vc:pager paging-list="@Model" />
+</nav>
 
-
+<script>
+    $('form').submit(function () {
+        if ($(this).valid()) {
+            $(':submit', this).attr('disabled', 'disabled');
+        }
+    });
+</script>

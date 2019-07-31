@@ -31,11 +31,13 @@ namespace Baza.Controllers
             {
                 _context.Add(likes);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Home", new { area = "" });
+                //return RedirectToAction("Index", "Home", new { area = "" 
+                return NoContent();
             }
             ViewData["LinkID"] = new SelectList(_context.Links, "LinkId", "Link", likes.LinkID);
             ViewData["UserID"] = new SelectList(_context.Users, "UserId", "Email", likes.UserID);
-            return RedirectToAction("Index", "Home", new { area = "" });
+            //return RedirectToAction("Index", "Home", new { area = "" });
+            return NoContent();
         }
 
         // GET: Likes

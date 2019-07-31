@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Baza.Models;
 using Microsoft.EntityFrameworkCore;
+using ReflectionIT.Mvc.Paging;
 
 namespace Baza.Controllers
 {
@@ -18,11 +19,15 @@ namespace Baza.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             //var linkAggregator = _context.Links.Include(l => l.Users);
-            var linkAggregator = _context.Links.Include(l => l.Users).Include(l => l.Likes);
-            return View(await linkAggregator.ToListAsync());
+            //var linkAggregator = _context.Links.Include(l => l.Users).Include(l => l.Likes);
+            //return View(await linkAggregator.ToListAsync());
+            //item.Likes.Where(l => l.LinkID == item.LinkId).Count();
+            var linkAggregator = _context.Links.Include(l => l.Users).Include(l => l.Likes)
+                .OrderByDescending(o => o.Likes.Where(l => l.LinkID == o.LinkId).Count());
+            return View(await PagingList.CreateAsync(linkAggregator, 3, page));
         }
 
         public IActionResult About()
