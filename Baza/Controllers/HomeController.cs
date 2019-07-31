@@ -20,7 +20,8 @@ namespace Baza.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var linkAggregator = _context.Links.Include(l => l.Users);
+            //var linkAggregator = _context.Links.Include(l => l.Users);
+            var linkAggregator = _context.Links.Include(l => l.Users).Include(l => l.Likes);
             return View(await linkAggregator.ToListAsync());
         }
 

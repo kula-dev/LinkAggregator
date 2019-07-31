@@ -1,43 +1,50 @@
-﻿@model IEnumerable<Baza.Models.Links>
+﻿@using Microsoft.AspNetCore.Http;
+
+@model IEnumerable<Baza.Models.Links>
 
 @{
     ViewData["Title"] = "Home Page";
     var a = 1;
     int count = 0;
+    var UserLikes = 0;
+    var OwnLinks = Model.Where(u => u.Users.UserId == @Context.Session.GetInt32("UserID"));
 }
 
 <h2>Index</h2>
 
-<table class="table">
+<table class="table table">
     @foreach (var item in Model)
     {
-        
-        <tr>
-            <td rowspan="2" class="col-md-2">
-                @a
-                <form asp-controller="Likes" asp-action="Like" asp-route-id="@Html.ValueFor(modelItem => item.LinkId)">
+        item.Likes.Where(l => l.UserID == @Context.Session.GetInt32("UserID"));
+        count = item.Likes.Where(l => l.LinkID == item.LinkId).Count();
+        <tr class="border-top-0">
+            <td rowspan="2" class="col-md-1">
+                @a.
+                @*@if (item.Likes.Where(l => l.UserID))
+                {
+
+                }*@
+                <form asp-controller="Likes" asp-action="Like" asp-route-id="@Html.ValueFor(modelItem => item.LinkId)" onsubmit="theButton.disabled = true; return true;">
                     <button type="submit">Like</button>
                 </form>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
-                <a href="#collapseExample"> @Html.DisplayFor(modelItem => item.Link) </a>
+                (<a href="#collapseExample"> @Html.DisplayFor(modelItem => item.Link) </a>)
             </td>
         </tr>
         <tr>
             <td>
+                @count
+                Lajków, Dodano:
                 @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                
-                @*@Html.DisplayFor(modelItem => item.Likes.Where(l => l.LinkID == item.LinkId))*@
             </td>
         </tr>
         a++;
     }
 </table>
 
-    @*<table class="table">
+@*<table class="table">
         <thead>
             <tr>
                 <th>
