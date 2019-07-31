@@ -19,9 +19,6 @@
         <tr>
             <td rowspan="2" class="col-md-2">
                 @a
-                <form asp-controller="Example" asp-action="Save" asp-route-id="@Html.ValueFor(modelItem => item.LinkId)">
-                    <button type="submit">Like</button>
-                </form>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
