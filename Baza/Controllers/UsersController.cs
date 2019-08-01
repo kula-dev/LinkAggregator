@@ -28,9 +28,22 @@ namespace Baza.Controllers
                 return RedirectToAction(nameof(Login));
             else
             {
+                //var linkAggregator = _context.Links.Include(l => l.Users).Include(l => l.Likes)
+                //    .Where(u => u.UserId == HttpContext.Session.GetInt32("UserID"))
+                //    .OrderByDescending(o => o.Likes.Where(l => l.LinkID == o.LinkId).Count());
+                //var model = new LinksService
+                //{
+                //    Links = (List<Links>)_context.Links.Include(l => l.Users).Include(l => l.Likes)
+                //    .Where(u => u.UserId == HttpContext.Session.GetInt32("UserID"))
+                //    .OrderByDescending(o => o.Likes.Where(l => l.LinkID == o.LinkId).Count()).ToList()
+                //};
+                //await PagingList.CreateAsync(linkAggregator, 3, page);
+                //return View(model);
+
                 //var linkAggregator = _context.Links.Include(l => l.Users);
                 //return View(await linkAggregator.ToListAsync());
                 //Model.Where(u => u.Users.UserId == @Context.Session.GetInt32("UserID"))
+
                 var linkAggregator = _context.Links.Include(l => l.Users).Include(l => l.Likes)
                     .Where(u => u.UserId == HttpContext.Session.GetInt32("UserID"))
                     .OrderByDescending(o => o.Likes.Where(l => l.LinkID == o.LinkId).Count());

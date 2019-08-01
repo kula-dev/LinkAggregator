@@ -68,10 +68,13 @@ namespace Baza.Controllers
                 links.UserId = (int)HttpContext.Session.GetInt32("UserID");
                 _context.Add(links);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                //ViewBag.Message = "Link dodany to agregatora!";
+                //return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Users", new { area = "" });
             }
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", links.UserId);
-            return View(links);
+            //return View(links);
+            return RedirectToAction("Index", "Users", new { area = "" });
         }
 
         // GET: Links/Edit/5
