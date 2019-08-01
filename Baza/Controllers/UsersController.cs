@@ -21,109 +21,18 @@ namespace Baza.Controllers
             _context = context;
         }
 
-        // GET: Users
         public async Task<IActionResult> Index(int page = 1)
         {
             if (HttpContext.Session.GetInt32("Login") != 1)
                 return RedirectToAction(nameof(Login));
             else
             {
-                //var linkAggregator = _context.Links.Include(l => l.Users).Include(l => l.Likes)
-                //    .Where(u => u.UserId == HttpContext.Session.GetInt32("UserID"))
-                //    .OrderByDescending(o => o.Likes.Where(l => l.LinkID == o.LinkId).Count());
-                //var model = new LinksService
-                //{
-                //    Links = (List<Links>)_context.Links.Include(l => l.Users).Include(l => l.Likes)
-                //    .Where(u => u.UserId == HttpContext.Session.GetInt32("UserID"))
-                //    .OrderByDescending(o => o.Likes.Where(l => l.LinkID == o.LinkId).Count()).ToList()
-                //};
-                //await PagingList.CreateAsync(linkAggregator, 3, page);
-                //return View(model);
-
-                //var linkAggregator = _context.Links.Include(l => l.Users);
-                //return View(await linkAggregator.ToListAsync());
-                //Model.Where(u => u.Users.UserId == @Context.Session.GetInt32("UserID"))
-
                 var linkAggregator = _context.Links.Include(l => l.Users).Include(l => l.Likes)
                     .Where(u => u.UserId == HttpContext.Session.GetInt32("UserID"))
                     .OrderByDescending(o => o.Likes.Where(l => l.LinkID == o.LinkId).Count());
-                return View(await PagingList.CreateAsync(linkAggregator, 3, page));
+                return View(await PagingList.CreateAsync(linkAggregator, 100, page));
             }
         }
-
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var users = await _context.Users
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (users == null)
-            {
-                return NotFound();
-            }
-
-            return View(users);
-        }
-
-        // GET: Users/Create
-        
-
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var users = await _context.Users.FindAsync(id);
-            if (users == null)
-            {
-                return NotFound();
-            }
-            return View(users);
-        }
-
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,Email,Password,ConfirmPassword")] Users users)
-        {
-            if (id != users.UserId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(users);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UsersExists(users.UserId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(users);
-        }
-
-        // GET: Users/Delete/5
 
         public IActionResult Register()
         {

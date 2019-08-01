@@ -4,10 +4,16 @@
     ViewData["Title"] = "Create";
 }
 
-<h2>Create</h2>
+<h2>Dodawanie linków</h2>
 
-<h4>Links</h4>
+<h4>Link</h4>
 <hr />
+@if (ViewBag.MessageLinkAdd != null)
+{
+    <div class="form-group" style="color:green;">
+        @ViewBag.MessageLinkAdd
+    </div>
+}
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
@@ -30,7 +36,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Users" asp-action="Index">Wróc do panelu</a>
 </div>
 
 @section Scripts {
