@@ -6,7 +6,9 @@
     ViewData["Title"] = "Home Page";
     var a = 1;
     int count = 0;
-    var OwnLinks = Model.Where(u => u.Users.UserId == @Context.Session.GetInt32("UserID"));
+    var OwnLikes = Model.Where(u => u.Users.UserId == @Context.Session.GetInt32("UserID"));
+    var LikeImage = "~/images/like.svg";
+    var DislikeImage = "~/images/Dislike.svg";
 }
 
 <h2>Index</h2>
@@ -24,18 +26,21 @@
             <td rowspan="2" class="col-md-1">
                 @a
                 @if (@Context.Session.GetInt32("UserID") != null)
-                {
-                    @if (item.Likes.Where(l => l.LinkID == item.LinkId).Where(u => u.UserID == @Context.Session.GetInt32("UserID")).Any())
+                {//Model.Where(u => u.Users.UserId == @Context.Session.GetInt32("UserID"))
+                    @if (!OwnLikes.Contains(item))
                     {
-                        <form asp-controller="" asp-action="">
-                            <button type="submit" disabled>Like</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <form asp-controller="Likes" asp-action="Like" asp-route-id="@Html.ValueFor(modelItem => item.LinkId)" onsubmit="this.disabled = true; return true;" data-ajax="true" onclick="this.disabled = true">
-                            <button type="submit" onclick="this.disabled = true">Like</button>
-                        </form>
+                        @if (item.Likes.Where(l => l.LinkID == item.LinkId).Where(u => u.UserID == @Context.Session.GetInt32("UserID")).Any())
+                        {
+                            <form asp-controller="Likes" asp-action="Like" asp-route-id="@Html.ValueFor(modelItem => item.LinkId)" data-ajax="true">
+                                <input type="image" src="@Url.Content(DislikeImage)" height="32" width="32" alt="Dislike" onclick="return SetImage(this)" value="dislike">
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-controller="Likes" asp-action="Like" asp-route-id="@Html.ValueFor(modelItem => item.LinkId)" data-ajax="true">
+                                <input type="image" src="@Url.Content(LikeImage)" height="32" width="32" alt="Like" onclick="return SetImage(this)" value="like">
+                            </form>
+                        }
                     }
                 }
             </td>
@@ -62,11 +67,20 @@
 <nav>
     <vc:pager paging-list="@Model" />
 </nav>
+<img src="@Url.Content(LikeImage)" alt="" height="0" width="0"/>
+<img src="@Url.Content(DislikeImage)" alt="" height="0" width="0"/>
 
-<script>
-    $('form').submit(function () {
-        if ($(this).valid()) {
-            $(':submit', this).attr('disabled', 'disabled');
+
+<script type="text/javascript">
+    function SetImage(btn) {
+        if (btn.value == "like") {
+            btn.value = "dislike";
+            btn.setAttribute("src", '@Url.Content("~/images/Dislike.svg")');
         }
-    });
+        else if (btn.value == "dislike") {
+            btn.value = "like";
+            btn.setAttribute("src", '@Url.Content("~/images/like.svg")');
+        }
+        return true;
+    }
 </script>

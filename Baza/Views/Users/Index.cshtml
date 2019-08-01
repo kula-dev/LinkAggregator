@@ -5,6 +5,7 @@
 @{
     ViewData["Title"] = "Panel użytkownika";
     var a = 1;
+    int count = 0;
 }
 
 <h2>Panel użytkownika @Context.Session.GetString("UserEmail")</h2>
@@ -13,9 +14,14 @@
     <a asp-controller="Links" asp-action="Create">Dodaj nowy link</a>
 </p>
 
+<nav>
+    @await this.Component.InvokeAsync("Pager", new { pagingList = this.Model })
+</nav>
+
 <table class="table">
-    @foreach (var item in Model.Where(u => u.Users.UserId == @Context.Session.GetInt32("UserID")))
+    @foreach (var item in Model)
     {
+        count = item.Likes.Where(l => l.LinkID == item.LinkId).Count();
         <tr>
             <td rowspan="2" class="col-md-2">
                 @a
@@ -27,9 +33,15 @@
         </tr>
         <tr>
             <td>
+                @count
+                Lajków, Dodano:
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
         </tr>
         a++;
     }
 </table>
+
+<nav>
+    @await this.Component.InvokeAsync("Pager", new { pagingList = this.Model })
+</nav>

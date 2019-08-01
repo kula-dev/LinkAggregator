@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Baza.Models;
 using Microsoft.AspNetCore.Http;
 using System.Data.SqlClient;
+using ReflectionIT.Mvc.Paging;
 
 namespace Baza.Controllers
 {
@@ -21,14 +22,19 @@ namespace Baza.Controllers
         }
 
         // GET: Users
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             if (HttpContext.Session.GetInt32("Login") != 1)
                 return RedirectToAction(nameof(Login));
             else
             {
-                var linkAggregator = _context.Links.Include(l => l.Users);
-                return View(await linkAggregator.ToListAsync());
+                //var linkAggregator = _context.Links.Include(l => l.Users);
+                //return View(await linkAggregator.ToListAsync());
+                //Model.Where(u => u.Users.UserId == @Context.Session.GetInt32("UserID"))
+                var linkAggregator = _context.Links.Include(l => l.Users).Include(l => l.Likes)
+                    .Where(u => u.UserId == HttpContext.Session.GetInt32("UserID"))
+                    .OrderByDescending(o => o.Likes.Where(l => l.LinkID == o.LinkId).Count());
+                return View(await PagingList.CreateAsync(linkAggregator, 3, page));
             }
         }
 

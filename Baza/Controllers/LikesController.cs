@@ -25,18 +25,39 @@ namespace Baza.Controllers
         [HttpPost]
         public async Task<IActionResult> Like([Bind("LikeId,UserID,LinkID")] Likes likes, int id)
         {
-            likes.LinkID = id;
-            likes.UserID = (int)HttpContext.Session.GetInt32("UserID");
-            if (ModelState.IsValid)
+            var model = _context.Likes.Where(u => u.UserID == HttpContext.Session.GetInt32("UserID") && u.LinkID == id).Any();
+            if (model == false)
             {
-                _context.Add(likes);
-                await _context.SaveChangesAsync();
-                //return RedirectToAction("Index", "Home", new { area = "" 
+                likes.LinkID = id;
+                likes.UserID = (int)HttpContext.Session.GetInt32("UserID");
+                if (ModelState.IsValid)
+                {
+                    _context.Add(likes);
+                    await _context.SaveChangesAsync();
+                    //return RedirectToAction("Index", "Home", new { area = "" 
+                    return NoContent();
+                }
+                ViewData["LinkID"] = new SelectList(_context.Links, "LinkId", "Link", likes.LinkID);
+                ViewData["UserID"] = new SelectList(_context.Users, "UserId", "Email", likes.UserID);
+                //return RedirectToAction("Index", "Home", new { area = "" });
                 return NoContent();
             }
-            ViewData["LinkID"] = new SelectList(_context.Links, "LinkId", "Link", likes.LinkID);
-            ViewData["UserID"] = new SelectList(_context.Users, "UserId", "Email", likes.UserID);
-            //return RedirectToAction("Index", "Home", new { area = "" });
+            else
+            {
+                //var model = await _context.Likes.Where(u => u.UserID == HttpContext.Session.GetInt32("UserID") && u.LinkID == id).FirstAsync();
+                _context.Likes.Remove(await _context.Likes.Where(u => u.UserID == HttpContext.Session.GetInt32("UserID") && u.LinkID == id).FirstAsync());
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Dislike(int id)
+        {
+            var model = await _context.Likes.Where(u => u.UserID == HttpContext.Session.GetInt32("UserID") && u.LinkID == id).FirstAsync();
+            //var likes = await _context.Likes.FindAsync();
+            _context.Likes.Remove(model);
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
