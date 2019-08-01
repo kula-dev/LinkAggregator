@@ -30,7 +30,7 @@ namespace Baza
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
@@ -62,6 +62,12 @@ namespace Baza
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseSession();
+
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<LinkAggregator>();
+                context.Database.Migrate();
+            }
 
             app.UseMvc(routes =>
             {

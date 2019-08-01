@@ -3,7 +3,7 @@
 @model IEnumerable<Baza.Models.Links>
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Strona Główna";
     int a;
     int count = 0;
     var OwnLikes = Model.Where(u => u.Users.UserId == @Context.Session.GetInt32("UserID"));
@@ -25,7 +25,7 @@
 
 }
 
-<h2>Index</h2>
+<h2>Strona Główna</h2>
 
 <nav>
     @await this.Component.InvokeAsync("Pager", new { pagingList = this.Model })
