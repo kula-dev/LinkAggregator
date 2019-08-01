@@ -51,16 +51,6 @@ namespace Baza.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Dislike(int id)
-        {
-            var model = await _context.Likes.Where(u => u.UserID == HttpContext.Session.GetInt32("UserID") && u.LinkID == id).FirstAsync();
-            //var likes = await _context.Likes.FindAsync();
-            _context.Likes.Remove(model);
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
-
         // GET: Likes
         public async Task<IActionResult> Index()
         {
